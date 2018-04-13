@@ -7,9 +7,9 @@ Post-processing tool for AIS data
 
 #. This script reads daily .cvs files 
 containing ship pings at regular intervals
-#. The script then write another .cvs file as
+#. The script then write another .csv file as
 an output at 6hrs interval for voyages lasting
-a total of 30hrs.
+30+ hrs.
 
 License:
 ========

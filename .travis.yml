@@ -1,0 +1,23 @@
+sudo: false
+language: python
+
+matrix:
+    include:
+      - python: 2.7
+        env: TOXenv=py27
+      - python: 3.3
+        env: TOXenv=py33
+      - python: 3.4
+        env: TOXenv=py34
+      - python: 3.5
+        env: TOXenv=py35
+      - python: nightly
+        env: TOXenv=py36
+      - python: pypy
+        env: TOXenv=pypy
+		
+script: tox -e $TOXenv
+
+install:
+    - pip install tox
+

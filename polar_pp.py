@@ -44,7 +44,7 @@ class pp_core(object):
     """
 
     def __init__(self):
-        self.time_threshold = 60000
+        self.time_threshold = 21600
         self.newCount = True 
 
     class __qVector(object):
@@ -63,27 +63,24 @@ class pp_core(object):
            _t  = []
            _sid = []
            _diff = []
+           _step = 0
+           _ax = 0
            for cnt, row in enumerate(inObj):
                _sid.append(row[0])
                _t.append(row[1])
-               _a = _sid[0]; _b = _sid[cnt]
-               _c = _t[0]; _d = _t[cnt]
+               _a = _sid[_ax]; _b = _sid[cnt]
+               _c = _t[_ax]; _d = _t[cnt]
                start = datetime.strptime(_c, "%Y-%m-%d %H:%M:%S")
                end = datetime.strptime(_d, "%Y-%m-%d %H:%M:%S")
-               _diff.append(end-start)
-               if ( _a == _b and _diff[cnt].seconds < pp_core().time_threshold):
+               _diff.append(end-start); _e = end-start
+               _step += _diff[cnt].seconds
+               if ( _a == _b and _diff[cnt].seconds < pp_core().time_threshold ):
+                  print ('sid: {}, step: {}'.format(_b,_diff[cnt].seconds))
                   next(inObj)
-               yield _b, _d, _diff[cnt].seconds 
-#++++++++++++++++++++++
-#               _sid.append(row[0])
-#               _t.append(row[1])
-#               _a = _sid[0]; _b = _sid[cnt]
-#               _c = _t[0]; _d = _t[cnt]
-#               start = datetime.strptime(_c, "%Y-%m-%d %H:%M:%S")
-#               end = datetime.strptime(_d, "%Y-%m-%d %H:%M:%S")
-#               _diff.append(end-start)
-#               if _diff[cnt].seconds < pp_core().time_threshold:
-#                  yield _b, _d, _diff[cnt].seconds 
+               else: 
+                   _ax = cnt 
+                   _step = 0 
+                   yield _b, _d, _diff[cnt].seconds 
 
            data_gen = (newData for newData in _diff if newData.seconds > pp_core().time_threshold)
            if pp_core().newCount: 
@@ -91,17 +88,24 @@ class pp_core(object):
            else:
               dCount = 0
 
-           print("")
-           print('******************')
-           print('* start: {}'.format(start))
-           print('* end: {}'.format(end))
-           print('* number of rows: {}'.format(cnt))
-           print('* NEW number of rows: {}'.format(dCount))
-           print('* difference: {}'.format(_diff[5]))
-           print('* duration in seconds: {}'.format(_diff[5].seconds))
-           print('* number of days: {}'.format(_diff[5].days))
-           print('******************')
-           print("")
+           self.__print(start, end, cnt, dCount, _diff, _step)
+
+        def __print(self, start, end, cnt, dcount, diff, step):
+            print("")
+            print('******************')
+            print('* start: {}'.format(start))
+            print('* end: {}'.format(end))
+            print('* number of rows: {}'.format(cnt))
+            print('* NEW number of rows: {}'.format(dcount))
+            print('* difference: {}'.format(diff[5]))
+#            print('* duration in seconds: {}'.format(diff[cnt].seconds))
+            print('* number of days: {}'.format(diff[5].days))
+            print('* Steps: {}'.format(step))
+            print('******************')
+            print("")
+
+        def __filter(self, ax, bx, cx, dx):
+            pass 
 
     @staticmethod
     @__qVector
@@ -115,6 +119,7 @@ class pp_core(object):
                  with open(filename) as f:
                       data = csv.DictReader(f, delimiter=';')
                       for counter, rw in enumerate(data):
+#                          print counter
                           yield rw[strs[0]], rw[strs[1]]
 
               except csv.Error as e:
@@ -131,18 +136,19 @@ class pp_core(object):
         Write out data to a file
         """
 
+        if strs:
+           print strs
+
         if fmt == 'csv':
            try:
               import csv
               try:
                  with open(filename, 'w') as f:
-#                      fieldnames = [strs[0], strs[1]]
-                      fieldnames = [strs[0], strs[1], 'seconds']
-                      out_file = csv.DictWriter(f, fieldnames=fieldnames, delimiter=';')
+                      fnames = [strs[0], strs[1], strs[2]]
+                      out_file = csv.DictWriter(f, fieldnames=fnames, delimiter=';')
                       out_file.writeheader()
                       for counter, rw in enumerate(data):
-#                          out_file.writerow({strs[0]: rw[0], strs[1]: rw[1]})
-                          out_file.writerow({strs[0]: rw[0], strs[1]: rw[1], 'seconds': rw[2]})
+                          out_file.writerow({strs[0]: rw[0], strs[1]: rw[1], strs[2]: rw[2]})
 
               except csv.Error as e:
                  sys.exit('file {}, line {}: {}'.format(filename, reader.line_num, e))
