@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-__all__ = [ 'pp_read', 'pp_write' ]
+__all__ = [ 'read_data', 'write_data' ]
 
 __version__ = '0.1.0'
 __description__ = 'post-processing AIS/sea ice Data' 
@@ -34,6 +34,7 @@ SOFTWARE.
 
 import os, sys, inspect
 from datetime import timedelta, datetime, tzinfo, time
+import itertools
 #-----------------------------------------------------------------------------#
 
 class pp_core(object):
@@ -45,6 +46,7 @@ class pp_core(object):
 
     def __init__(self):
         self.time_threshold = 21600
+        self.timeSpan = 108000
         self.newCount = True 
 
     class __qVector(object):
@@ -63,8 +65,8 @@ class pp_core(object):
            _t  = []
            _sid = []
            _diff = []
-           _step = 0
-           _ax = 0
+           _subStepCount = []
+           _ax = 0; _step = 0
            for cnt, row in enumerate(inObj):
                _sid.append(row[0])
                _t.append(row[1])
@@ -75,6 +77,7 @@ class pp_core(object):
                _diff.append(end-start); _e = end-start
                _step += _diff[cnt].seconds
                if ( _a == _b and _diff[cnt].seconds < pp_core().time_threshold ):
+                  _subStepCount.append(cnt)
                   print ('sid: {}, step: {}'.format(_b,_diff[cnt].seconds))
                   next(inObj)
                else: 
@@ -82,26 +85,31 @@ class pp_core(object):
                    _step = 0 
                    yield _b, _d, _diff[cnt].seconds 
 
-           data_gen = (newData for newData in _diff if newData.seconds > pp_core().time_threshold)
+           data_gen = (newData for newData in _diff if newData.seconds >= pp_core().time_threshold)
            if pp_core().newCount: 
               dCount = sum(1 for n in data_gen)
            else:
               dCount = 0
 
-           self.__print(start, end, cnt, dCount, _diff, _step)
+           subTot = len(_subStepCount)
+           tot = subTot + cnt + 1 
 
-        def __print(self, start, end, cnt, dcount, diff, step):
+           self.__printSummary(start, end, cnt, subTot, dCount, tot, _diff, _step)
+
+        def __printSummary(self, start, end, cnt, subtot, dcount, tot, diff, step):
             print("")
-            print('******************')
+            print('*'*20)
             print('* start: {}'.format(start))
             print('* end: {}'.format(end))
             print('* number of rows: {}'.format(cnt))
+            print('* Substep count of rows: {}'.format(subtot))
+            print('* TOTAL number of rows read: {}'.format(tot))
             print('* NEW number of rows: {}'.format(dcount))
             print('* difference: {}'.format(diff[5]))
 #            print('* duration in seconds: {}'.format(diff[cnt].seconds))
             print('* number of days: {}'.format(diff[5].days))
             print('* Steps: {}'.format(step))
-            print('******************')
+            print('*'*20)
             print("")
 
         def __filter(self, ax, bx, cx, dx):
@@ -109,18 +117,20 @@ class pp_core(object):
 
     @staticmethod
     @__qVector
-    def read_file(filename, fmt, *strs):
+    def read_data(filename, fmt, *strs):
         """ read input file: """
 
         if fmt == 'csv':
            try:
               import csv
               try:
-                 with open(filename) as f:
-                      data = csv.DictReader(f, delimiter=';')
-                      for counter, rw in enumerate(data):
+#                 with open(filename) as f:
+#                      data = csv.DictReader(f, delimiter=';')
+#                      data = itertools.chain(*map(lambda f: csv.DictReader(open(f, 'r')), files))
+                 data = itertools.chain(*map(lambda f: csv.DictReader(open(f), delimiter=';'), filename))
+                 for counter, rw in enumerate(data):
 #                          print counter
-                          yield rw[strs[0]], rw[strs[1]]
+                     yield rw[strs[0]], rw[strs[1]]
 
               except csv.Error as e:
                  sys.exit('file {}, line {}: {}'.format(filename, reader.line_num, e))
@@ -131,7 +141,7 @@ class pp_core(object):
         else: pass
 
     @staticmethod
-    def write_file(filename, data, fmt, *strs):
+    def write_data(filename, data, fmt, *strs):
         """
         Write out data to a file
         """
@@ -157,9 +167,9 @@ class pp_core(object):
               raise ImportError('cannot import csv module')
 
     @classmethod 
-    def __test_gen(cls, gen):
+    def __test_gen(class_, gen):
         """ Try to determine the size of your new data """
-        cls.count = sum(1 for n in gen) 
-        return cls.count
+        class_.count = sum(1 for n in gen) 
+        return class_.count
 
 
