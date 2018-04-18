@@ -33,9 +33,24 @@ SOFTWARE.
 #-----------------------------------------------------------------------------#
 
 import os, sys, inspect
-from datetime import timedelta, datetime, tzinfo, time
+from abc import ABCMeta, abstractmethod
+#from datetime import timedelta, datetime, tzinfo, time
+from datetime import timedelta, datetime, tzinfo
+import time as time
+from numpy import linspace
 import itertools
+import collections
 #-----------------------------------------------------------------------------#
+
+class progressBase(object):
+    __metaclass__ = ABCMeta
+    """
+    base class for progressbar
+    """
+
+    @abstractmethod
+    def __call__(self, *args):
+       pass
 
 class pp_core(object):
     """
@@ -49,24 +64,39 @@ class pp_core(object):
         self.timeSpan = 108000
         self.newCount = True 
 
-    class __qVector(object):
+    class __qVector(progressBase):
         """
         Determine the time step
         """
         def __init__(self, inFunc):
-            self.func = inFunc
+           self.func = inFunc
+#           super(__qVector, self).__init__()
 
         def __call__(self, *args):
            inObj = self.func(*args)
-           len_args = len(args)
-           if len_args > 1: 
-              ncount = args[len_args-1]
-              t_threshold = args[len_args-2]
+           inObj, inObjCp = itertools.tee(inObj)
+           ln = pp_core.lengthOfgen(inObjCp)
+#           ln = sum(1 for n in inObjCp)
            _t  = []
            _sid = []
            _diff = []
            _subStepCount = []
            _ax = 0; _step = 0
+
+           startT = time.time()
+           endT = startT
+           deci = 100
+           refT = 10
+           deciSteps = {}
+           print(' INSIDE ELEN = {}'.format(ln))
+           tstr = '[00:00:00, --:--:--]'
+           cstr = ('', u'\u258E',u'\u258C',u'\u258A')
+           #for i, jj in zip(linspace(0,ln-1,min(deci+1,ln)), linspace(0,deci,min(deci+1,ln))):
+           #    ii = int(i)
+           #    deciSteps.update(ii = (int(jj/4.0),int(jj%4)))
+           deciSteps = {int(x):(int(y/4.0),int(y%4)) for x,y in zip(linspace(0,ln-1,min(101,ln)), linspace(0,100,min(101,ln)))}
+           print (' DECSTEPS: {}'.format(deciSteps))
+
            for cnt, row in enumerate(inObj):
                _sid.append(row[0])
                _t.append(row[1])
@@ -78,12 +108,28 @@ class pp_core(object):
                _step += _diff[cnt].seconds
                if ( _a == _b and _diff[cnt].seconds < pp_core().time_threshold ):
                   _subStepCount.append(cnt)
-                  print ('sid: {}, step: {}'.format(_b,_diff[cnt].seconds))
                   next(inObj)
                else: 
                    _ax = cnt 
                    _step = 0 
                    yield _b, _d, _diff[cnt].seconds 
+
+               if cnt in deciSteps:
+                  haDry   = u'\u2588'*(deciSteps[cnt][0])+cstr[deciSteps[cnt][1]]
+                  yetTo   = ' '*(25-len(haDry))
+                  progbar = '%3d%% |%s%s|' %((cnt)/(ln-1.0)*100.0, haDry, yetTo)
+                  if cnt>0:
+                     progbar  = '\r'+progbar
+                     endT = time.time()
+                     tstr = ' [%s, %s]'%(self.tToStr(endT-startT), self.tToStr((endT-startT)*(ln/(cnt+1.0)-1)))
+                  if cnt == ln-1: 
+                     tstr += '\n'
+                  sys.stdout.write((progbar+tstr).encode('utf-8')); sys.stdout.flush()
+               elif time.time()-endT > refT:
+                  endT = time.time()
+                  tstr = ' [%s, %s]'%(self.tToStr(endT-startT), self.tToStr((endT-startT)*(ln/(cnt+1.0)-1)))
+                  progbar = '%3d%% |%s%s|' %((cnt)/(ln-1.0)*100.0, haDry, yetTo)
+                  sys.stdout.write(('\r'+progbar+tstr).encode('utf-8')); sys.stdout.flush()
 
            data_gen = (newData for newData in _diff if newData.seconds >= pp_core().time_threshold)
            if pp_core().newCount: 
@@ -106,7 +152,6 @@ class pp_core(object):
             print('* TOTAL number of rows read: {}'.format(tot))
             print('* NEW number of rows: {}'.format(dcount))
             print('* difference: {}'.format(diff[5]))
-#            print('* duration in seconds: {}'.format(diff[cnt].seconds))
             print('* number of days: {}'.format(diff[5].days))
             print('* Steps: {}'.format(step))
             print('*'*20)
@@ -114,6 +159,11 @@ class pp_core(object):
 
         def __filter(self, ax, bx, cx, dx):
             pass 
+
+        def tToStr(self, tInSec):
+            minutes, secs = divmod(tInSec, 60)
+            hrs, minutes = divmod(minutes, 60)
+            return u'%02d:%02d:%02d' %(hrs,minutes,secs)
 
     @staticmethod
     @__qVector
@@ -129,7 +179,6 @@ class pp_core(object):
 #                      data = itertools.chain(*map(lambda f: csv.DictReader(open(f, 'r')), files))
                  data = itertools.chain(*map(lambda f: csv.DictReader(open(f), delimiter=';'), filename))
                  for counter, rw in enumerate(data):
-#                          print counter
                      yield rw[strs[0]], rw[strs[1]]
 
               except csv.Error as e:
@@ -147,7 +196,7 @@ class pp_core(object):
         """
 
         if strs:
-           print strs
+           print (strs)
 
         if fmt == 'csv':
            try:
@@ -171,5 +220,12 @@ class pp_core(object):
         """ Try to determine the size of your new data """
         class_.count = sum(1 for n in gen) 
         return class_.count
+
+    @staticmethod 
+    def lengthOfgen(genObj):
+        """ Determine length of a generator """
+        for n, m in enumerate(genObj):  
+            pass
+        return n
 
 

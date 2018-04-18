@@ -53,7 +53,8 @@ if __name__ == "__main__":
    pp.header = 'mmsi', 'date_time_utc', 'seconds'
 
    fpath = '/Volumes/IBES_LynchLab/AIS/2011/20110101-20110601/'
-   prefix = 'ais_2011'
+#   prefix = 'ais_2011'
+   prefix = 'ais_2011010'
    fOut = 'combinedfile.csv'
    availFiles = countFiles(fpath, pp.frmt)
    print(availFiles)
