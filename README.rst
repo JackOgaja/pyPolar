@@ -17,5 +17,5 @@ License:
 MIT License
 
 For detailed copyright and licensing information, please refer to the
-license file `LICENSE.md` in the top level cs.analytic directory.
+license file `LICENSE.md` in the top level directory.
 
