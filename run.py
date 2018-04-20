@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from polar_pp import post_process 
+from polar_pp import pp_process 
 from polar_pp import combineFiles1, combineFiles2 
 from polar_pp import countFiles 
 
@@ -8,11 +8,13 @@ from polar_pp import countFiles
 # Attributes: time interval = 6hrs
 #             duration = 30+ hrs
 
-# Call the post processing routine
-pp = post_process()
+# Call the PP processing routine
+pp = pp_process()
 
-# Set the attributes:
-pp.frmt = 'csv'     # file format
+# a) Set the attributes:
+
+# file format
+pp.frmt = 'csv'     
 
 # file header
 pp.header = 'mmsi', 'date_time_utc', \
@@ -29,11 +31,11 @@ prefix = 'ais_20110101'  # a file name can be specified e.g. 'ais_20110101.csv'
 fOut = 'pp_'+prefix+'.'+pp.frmt  # if a complete file name is selected above,
                              # then just add the prefix e.g. fOut='pp_'+prefix
 
-# count the files available for post processing
+# count the files available for processing
 availFiles = countFiles(fpath, pp.frmt)
 print('-'*3+'number of files: {}'.format(availFiles))
 
-# If there are few files for post processing,
+# If there are few files for processing,
 # they can be combined to a single file
 # by calling 'combineFiles1', otherwise
 # create a list of files using 'combineFiles2'
@@ -48,6 +50,7 @@ pp.FNIN = files
 # Set the output directory + output file name
 pp.FNOUT = '/Users/jack/Downloads/ais_test/'+fOut
 
-# Read, post process and write the post processed data into a new file
+# b) Call the main PP method "read_write"
+# Read, process and write the processed data into a new file
 pp.read_write()
 

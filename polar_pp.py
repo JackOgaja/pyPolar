@@ -7,7 +7,10 @@ from pp_core import pp_core as ppc
 import glob, os
 import pandas as pd
 
-class post_process(object):
+class pp_process(object):
+      """
+      : Read --> Process --> Write data files
+      """
 
       def __init__(self):
           self.newcount = False
@@ -22,6 +25,12 @@ class post_process(object):
           ppc.write_data(self.FNOUT, inData, self.frmt, *self.header) 
 
 def combineFiles1(fPath, fInPrefix, fOut):
+    """
+    : Collect and append files into a new file
+    : Caution:
+    : This process is memory intensive and 
+    : is not recommended for huge files
+    """
     os.chdir(fPath)
     results = pd.DataFrame([])
 
@@ -34,18 +43,26 @@ def combineFiles1(fPath, fInPrefix, fOut):
 
 def combineFiles2(fPath, fInPrefix):
     """
-    creates a list of all files
+    : creates a list of all files
     """
     os.chdir(fPath)
     files = sorted(glob.glob(fInPrefix+'*'))
     return files 
 
 def countFiles(fPath, frmt):
+    """
+    : Count the number of files available
+    : for processing in a directory
+    """
     # output: [path, dir, files]
     availFiles = len([f for f in next(os.walk(fPath))[2] if f[-4:] == '.'+frmt])
     return availFiles
 
 if __name__ == "__main__":
+   """
+   : In case this file is executed as the run script
+   : Make the necessary settings below
+   """
    pp = post_process()
    
    pp.frmt = 'csv'
@@ -53,9 +70,9 @@ if __name__ == "__main__":
                'lon', 'lat', 'sog', 'cog', \
                'true_heading', 'nav_status', 'message_nr' 
 
-   fpath = '/Volumes/IBES_LynchLab/AIS/2011/20110101-20110601/'
-   prefix = 'ais_20110101'
-   fOut = 'combinedfile_'+prefix+pp.frmt
+   fpath = '/Users/jack/Arbeit/lynch_lab/postproc/test_data/'
+   prefix = 'ais_201101'
+   fOut = 'pp_test_'+prefix+'.'+pp.frmt
    availFiles = countFiles(fpath, pp.frmt)
    print('-'*3+'number of files: {}'.format(availFiles))
    files = combineFiles2(fpath, prefix)
