@@ -23,10 +23,10 @@ pp.header = 'mmsi', 'date_time_utc', \
 fpath = '/Volumes/IBES_LynchLab/AIS/2011/20110101-20110601/'
 
 # Prefix for selecting files of a particular period
-prefix = 'ais_2011'  # a file name can be specified e.g. 'ais_20110101.csv'
+prefix = 'ais_20110101'  # a file name can be specified e.g. 'ais_20110101.csv'
 
 # Output file name
-fOut = 'pp_'+prefix+pp.frmt  # if a complete file name is selected above,
+fOut = 'pp_'+prefix+'.'+pp.frmt  # if a complete file name is selected above,
                              # then just add the prefix e.g. fOut='pp_'+prefix
 
 # count the files available for post processing
