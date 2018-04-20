@@ -63,7 +63,7 @@ if __name__ == "__main__":
    : In case this file is executed as the run script
    : Make the necessary settings below
    """
-   pp = post_process()
+   pp = pp_process()
    
    pp.frmt = 'csv'
    pp.header = 'mmsi', 'date_time_utc', \

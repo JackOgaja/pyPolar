@@ -4,7 +4,7 @@ from polar_pp import pp_process
 from polar_pp import combineFiles1, combineFiles2 
 from polar_pp import countFiles 
 
-# Post processing .csv files
+# Processing .csv files
 # Attributes: time interval = 6hrs
 #             duration = 30+ hrs
 
@@ -22,13 +22,13 @@ pp.header = 'mmsi', 'date_time_utc', \
             'true_heading', 'nav_status', 'message_nr'
 
 # Path for the raw data files
-fpath = '/Volumes/IBES_LynchLab/AIS/2011/20110101-20110601/'
+fpath = '/Volumes/IBES_LynchLab/AIS/2011/20110601-20120101/'
 
 # Prefix for selecting files of a particular period
-prefix = 'ais_20110101'  # a file name can be specified e.g. 'ais_20110101.csv'
+prefix = 'ais_2011'  # a file name can be specified e.g. 'ais_20110101.csv'
 
 # Output file name
-fOut = 'pp_'+prefix+'.'+pp.frmt  # if a complete file name is selected above,
+fOut = 'pp_'+prefix+'_2.'+pp.frmt  # if a complete file name is selected above,
                              # then just add the prefix e.g. fOut='pp_'+prefix
 
 # count the files available for processing
