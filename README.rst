@@ -11,6 +11,11 @@ containing ship pings at regular intervals
 an output at 6hrs interval for voyages lasting
 30+ hrs.
 
+Wiki
+====
+
+See [this link](https://gitlab.com/lynch_lab/post_proc_tools/wikis/processing-AIS-data-using-post_proc_tools) for description of the tool
+
 License:
 ========
 
