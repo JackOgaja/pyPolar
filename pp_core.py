@@ -42,7 +42,7 @@ class progress(progressBase):
        startT = time.time()
        endT = startT
        deci = 100
-       refT = 10
+       refT = 1
        deciSteps = {}
        print(' total counts = {}'.format(ln))
        tstr = '[00:00:00, --:--:--]'

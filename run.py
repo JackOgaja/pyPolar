@@ -25,7 +25,7 @@ pp.header = 'mmsi', 'date_time_utc', \
 fpath = '/Volumes/IBES_LynchLab/AIS/2011/20110601-20120101/'
 
 # Prefix for selecting files of a particular period
-prefix = 'ais_2011'  # a file name can be specified e.g. 'ais_20110101.csv'
+prefix = 'ais_20111'  # a file name can be specified e.g. 'ais_20110101.csv'
 
 # Output file name
 fOut = 'pp_'+prefix+'_2.'+pp.frmt  # if a complete file name is selected above,
@@ -43,6 +43,7 @@ print('-'*3+'number of files: {}'.format(availFiles))
 # 'combineFiles1' is NOT recommended for huge files due
 # to memory limitations
 files = combineFiles2(fpath, prefix)
+#print(files)
 
 # Assign the combined file or the list of files to the input variable
 pp.FNIN = files
