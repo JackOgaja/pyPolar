@@ -16,19 +16,22 @@ pp = pp_process()
 # file format
 pp.frmt = 'csv'     
 
+# time step [seconds]
+pp.timeStep = 21600
+
 # file header
 pp.header = 'mmsi', 'date_time_utc', \
             'lon', 'lat', 'sog', 'cog', \
             'true_heading', 'nav_status', 'message_nr'
 
 # Path for the raw data files
-fpath = '/Volumes/IBES_LynchLab/AIS/2011/'
+fpath = '/Users/jack/Arbeit/lynch_lab/data_processing/test_data/'
 
 # Prefix for selecting files of a particular period
-prefix = 'pp_ais_2011'  # a file name can be specified e.g. 'ais_20110101.csv'
+prefix = 'ais_2011'  # a file name can be specified e.g. 'ais_20110101.csv'
 
 # Output file name
-fOut = prefix+'_complete.'+pp.frmt  # if a complete file name is selected above,
+fOut = 'pp_'+prefix+'_test.'+pp.frmt  # if a complete file name is selected above,
                              # then just add the prefix e.g. fOut='pp_'+prefix
 
 # count the files available for processing
@@ -43,7 +46,7 @@ print('-'*3+'number of files: {}'.format(availFiles))
 # 'combineFiles1' is NOT recommended for huge files due
 # to memory limitations
 files = combineFiles2(fpath, prefix)
-#print(files)
+print(files)
 
 # Assign the combined file or the list of files to the input variable
 pp.FNIN = files

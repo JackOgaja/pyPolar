@@ -83,10 +83,15 @@ class pp_core(object):
     ...
     """
 
+    # Additional class attributes
+    cls_time_threshold = 21600
+    cls_timeSpan = 108000
+    cls_newCount = True 
+
     def __init__(self):
-        self.time_threshold = 21600
-        self.timeSpan = 108000
-        self.newCount = True 
+        """
+        create the class instance
+        """
 
     class __qVector(progressBase):
         """
@@ -114,15 +119,15 @@ class pp_core(object):
                end = datetime.strptime(_d, "%Y-%m-%d %H:%M:%S")
                _diff.append(end-start); _e = end-start
                _step += _diff[cnt].seconds
-               if ( _a == _b and _diff[cnt].seconds < pp_core().time_threshold ):
+               if ( _a == _b and _diff[cnt].seconds < pp_core.cls_time_threshold ):
                   _subStepCount.append(cnt)
                else: 
                    _ax = cnt 
                    _step = 0 
                    yield row
 
-           data_gen = (newData for newData in _diff if newData.seconds >= pp_core().time_threshold)
-           if pp_core().newCount: 
+           data_gen = (newData for newData in _diff if newData.seconds >= pp_core.cls_time_threshold)
+           if pp_core.cls_newCount: 
               dCount = sum(1 for n in data_gen)
            else:
               dCount = 0
@@ -139,6 +144,7 @@ class pp_core(object):
             print('-')
             print('* start: {}'.format(start))
             print('* end: {}'.format(end))
+            print('* time step [sec]: {}'.format(pp_core.cls_time_threshold))
             print('* number of rows: {}'.format(cnt))
             print('* Substep count of rows: {}'.format(subtot))
             print('* TOTAL number of rows read: {}'.format(tot))

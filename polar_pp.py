@@ -19,8 +19,10 @@ class pp_process(object):
           self.FNOUT = ''
           self.frmt = ''
           self.header = ''
+          self.timeStep = 21600
 
       def read_write(self):
+          ppc.cls_time_threshold = self.timeStep
           inData = ppc.read_data(self.FNIN, self.frmt, *self.header) 
           ppc.write_data(self.FNOUT, inData, self.frmt, *self.header) 
 
@@ -66,6 +68,7 @@ if __name__ == "__main__":
    pp = pp_process()
    
    pp.frmt = 'csv'
+   pp.timeStep = 21600
    pp.header = 'mmsi', 'date_time_utc', \
                'lon', 'lat', 'sog', 'cog', \
                'true_heading', 'nav_status', 'message_nr' 

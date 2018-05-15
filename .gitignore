@@ -6,6 +6,7 @@ __pycache__/
 /.tox/
 
 # My files
+run*.sh
 clean_py_REF.txt
 versionUpddate.sh
 versionUpddate_REF.txt
