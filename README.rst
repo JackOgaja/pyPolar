@@ -14,7 +14,7 @@ an output at 6hrs interval for voyages lasting
 Wiki
 ====
 
-See `this <https://gitlab.com/lynch_lab/data_processing/post_proc_tools.wiki/processing-AIS-data-using-post_proc_tools>`_ for description of the tool
+See `this <https://gitlab.com/lynch_lab/pyPolar/wikis/pyPolar>`_ for description of the tool
 
 License:
 ========
