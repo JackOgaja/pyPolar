@@ -14,7 +14,7 @@ an output at 6hrs interval for voyages lasting
 Wiki
 ====
 
-See `this <https://gitlab.com/lynch_lab/pyPolar/wikis/pyPolar>`_ for description of the tool
+See `this <https://gitlab.com/lynch_lab/pyPolar/wikis/processing-AIS-data-using-pyPolar>`_ for description of the tool
 
 License:
 ========
