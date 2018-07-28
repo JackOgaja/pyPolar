@@ -16,23 +16,21 @@ def cleanDir(directory):
         print("Cleaning directory: " + directory + "\n")
         for f in os.listdir(directory):
             if not os.path.isdir(os.path.join(directory, f)) \
-                    and not f.lower().endswith(".dist") and not f.lower().endswith(".py"):
+                    and not f.lower().endswith(".pyc") and not f.lower().endswith(".py"):
                 os.remove(os.path.join(directory, f))
         for f in os.listdir(directory):
-            if not os.path.isdir(f) and f.lower().endswith(".dist"):
+            if not os.path.isdir(f) and f.lower().endswith(".pyc"):
                 copyfile(os.path.join(directory, f), os.path.join(directory, f[:-5]))
 
 
 print("Starting clean.\n")
 
 _Py_file_loc = os.path.dirname(os.path.realpath(__file__))
-_dist_dir = os.path.join(_Py_file_loc, "dist")
-_config_dir = os.path.join(_Py_file_loc, "config")
 _sample_dir = os.path.join(_Py_file_loc, "sample")
 
 # Delete the distribution dir if it exists
 if os.path.exists(_dist_dir):
-    print("Removing dist directory: " + _dist_dir + "\n")
+    print("Removing dist directory: " + _sample_dir + "\n")
     remove_tree(_dist_dir, verbose=1)
 
 # Clean the config dir

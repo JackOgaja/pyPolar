@@ -47,9 +47,6 @@ class progress(progressBase):
        print(' total counts = {}'.format(ln))
        tstr = '[00:00:00, --:--:--]'
        cstr = ('', u'\u258E',u'\u258C',u'\u258A')
-       #for i, jj in zip(linspace(0,ln-1,min(deci+1,ln)), linspace(0,deci,min(deci+1,ln))):
-       #    ii = int(i)
-       #    deciSteps.update(ii = (int(jj/4.0),int(jj%4)))
        deciSteps = {int(ii):(int(jj/4.0),int(jj%4)) for ii,jj in zip(linspace(0,ln-1,min(101,ln)), linspace(0,100,min(101,ln)))}
 
        for cnt, row in enumerate(gObj):
