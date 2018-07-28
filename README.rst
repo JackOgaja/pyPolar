@@ -3,9 +3,9 @@
 Overview
 =========
 
-Post-processing tool for AIS data
+Post-processing tool for AIS data files
 
-#. This script reads daily .cvs files 
+#. This tool reads daily .csv files 
 containing ship pings at regular intervals
 #. The script then write another .csv file as
 an output at 6hrs interval for voyages lasting
