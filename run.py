@@ -40,7 +40,7 @@ print('-'*3+'number of files: {}'.format(availFiles))
 
 # If there are few files for processing,
 # they can be combined to a single file
-# by calling 'combineFiles1', otherwise
+# by executing 'combineFiles1', otherwise
 # create a list of files using 'combineFiles2'
 # before processing. 
 # 'combineFiles1' is NOT recommended for huge files due
